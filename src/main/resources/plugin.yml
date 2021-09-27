@@ -1,0 +1,8 @@
+name: SkillBattle
+version: '${version}'
+main: jp.momonnga.skillbattle.SkillBattle
+api-version: 1.17
+
+commands:
+  skillbattle:
+    aliases: sb
