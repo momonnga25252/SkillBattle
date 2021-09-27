@@ -1,26 +1,45 @@
 package jp.momonnga.skillbattle;
 
+import jp.momonnga.skillbattle.skill.Skill;
+import jp.momonnga.skillbattle.skill.WallKick;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.util.RayTraceResult;
-import org.bukkit.util.Vector;
+
+import java.util.HashSet;
+import java.util.Set;
+
 
 public class PlayerRapper implements SkillBattlePlayer {
-    private Player self;
+    private final Player self;
     private int skillPoint;
     private int limitSkillPoint;
     private int regenerationSkillPoint;
+    private final Set<Skill> skillSet = new HashSet<>();
 
     public PlayerRapper(Player player) {
         this.self = player;
+        addSkill(WallKick.getInstance(WallKick.class));
+
     }
 
     @Override
     public Player getPlayer() {
         return self;
+    }
+
+    @Override
+    public void addSkill(Skill skill) {
+        skillSet.add(skill);
+    }
+
+    @Override
+    public void removeSkill(Skill skill) {
+        skillSet.remove(skill);
+    }
+
+    @Override
+    public boolean hasSkill(Skill skill) {
+        return skillSet.contains(skill);
     }
 
     @Override

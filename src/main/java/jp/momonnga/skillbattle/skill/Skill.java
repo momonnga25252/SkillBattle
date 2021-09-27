@@ -1,8 +1,12 @@
 package jp.momonnga.skillbattle.skill;
 
 import jp.momonnga.skillbattle.SkillBattle;
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,28 +23,29 @@ public abstract class Skill {
         }
     }
 
-    public static <T> T getInstance(Class<T> clazz) {
+    public static Skill getInstance(Class<? extends Skill> clazz) {
         synchronized (_lock) {
             String classname = clazz.getName();
             Skill obj = _classnameToInstance.get(classname);
             if (obj == null) {
                 try {
-                    Class<?> cls = Class.forName(classname);
-                    obj = (Skill) cls.newInstance();
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(classname + " is not found");
+                    obj = clazz.getDeclaredConstructor().newInstance();
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(classname + " cannot be accessed.");
                 } catch (InstantiationException e) {
                     throw new RuntimeException(classname + " cannot be instantiated.");
+                } catch (InvocationTargetException | NoSuchMethodException e) {
+                    e.printStackTrace();
                 }
             }
-            return (T) obj;
+            return obj;
         }
     }
 
     public abstract Listener getSkillProcessor();
 
-    public abstract String getPermissionName();
-
+    public static boolean checkGameMode(Player player) {
+        return !Arrays.asList(GameMode.CREATIVE,GameMode.SPECTATOR)
+                .contains(player.getGameMode());
+    }
 }

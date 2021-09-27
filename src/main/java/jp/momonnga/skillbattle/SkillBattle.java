@@ -1,12 +1,14 @@
 package jp.momonnga.skillbattle;
 
+import jp.momonnga.skillbattle.skill.Skill;
+import jp.momonnga.skillbattle.skill.TestSkill;
+import jp.momonnga.skillbattle.skill.WallKick;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public final class SkillBattle extends JavaPlugin {
 
@@ -15,16 +17,28 @@ public final class SkillBattle extends JavaPlugin {
     }
 
     private final List<SkillBattlePlayer> skillBattlePlayerList = new ArrayList<>();
+    private final Set<Skill> skillSet = new HashSet<>();
 
     @Override
     public void onEnable() {
-
+        registerDefaultSkills();
     }
 
     @Override
     public void onDisable() {
 
     }
+
+    private void registerDefaultSkills() {
+        Class<? extends Skill>[] skills = new Class[]{WallKick.class, TestSkill.class};
+        Arrays.stream(skills).map(Skill::getInstance).forEach(this::registerSkill);
+    }
+
+    public void registerSkill(Skill skill) {
+        skillSet.add(skill);
+        getServer().getPluginManager().registerEvents(skill.getSkillProcessor(),this);
+    }
+
 
     public SkillBattlePlayer getSkillBattlePlayer(Player player) {
         return skillBattlePlayerList.stream()
@@ -43,6 +57,7 @@ public final class SkillBattle extends JavaPlugin {
             registered = getSkillBattlePlayer(player);
         } else {
             registered = new PlayerRapper(player);
+            getLogger().info("プレイヤーデータが生成されました");
             skillBattlePlayerList.add(registered);
         }
         return registered;

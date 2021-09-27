@@ -4,6 +4,7 @@ import jp.momonnga.skillbattle.SkillBattlePlayer;
 import jp.momonnga.skillbattle.skill.event.SkillEvent;
 import jp.momonnga.skillbattle.skill.WallKick;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -11,10 +12,13 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+
+import java.util.Arrays;
 
 public class WallKickProcessor implements Listener {
 
@@ -28,9 +32,11 @@ public class WallKickProcessor implements Listener {
     @EventHandler
     public void listenPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
+        SkillBattlePlayer sp = SkillBattlePlayer.of(player);
 
         //干渉条件
-        if (!player.hasPermission(WallKick.PERMISSION)) return;
+        if (!sp.hasSkill(WallKick.getInstance(WallKick.class))) return;
+        if(WallKick.checkGameMode(player)) return;
 
         Location loc = player.getLocation();
         World world = player.getWorld();
@@ -44,14 +50,24 @@ public class WallKickProcessor implements Listener {
     }
 
     /*
+        モード切替時AllowFlightを変更
+     */
+    @EventHandler
+    public void changeGameMode(PlayerGameModeChangeEvent event) {
+        event.getPlayer().setAllowFlight(WallKick.checkGameMode(event.getPlayer()));
+    }
+
+    /*
         実際の壁ジャンプの処理
      */
     @EventHandler
     public void listenToggleFlightEvent(PlayerToggleFlightEvent event) {
         Player player = event.getPlayer();
+        SkillBattlePlayer sp = SkillBattlePlayer.of(player);
 
         //干渉条件
-        if (!player.hasPermission(WallKick.PERMISSION)) return;
+        if (!sp.hasSkill(WallKick.getInstance(WallKick.class))) return;
+        if(WallKick.checkGameMode(player)) return;
 
         //切り替えをキャンセル
         event.setCancelled(true);

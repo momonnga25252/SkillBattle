@@ -1,5 +1,6 @@
 package jp.momonnga.skillbattle;
 
+import jp.momonnga.skillbattle.skill.Skill;
 import org.bukkit.entity.Player;
 
 public interface SkillBattlePlayer extends SkillPointHolder {
@@ -13,5 +14,10 @@ public interface SkillBattlePlayer extends SkillPointHolder {
 
     Player getPlayer();
 
+    void addSkill(Skill skill);
+
+    void removeSkill(Skill skill);
+
+    boolean hasSkill(Skill skill);
 
 }
