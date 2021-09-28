@@ -1,9 +1,10 @@
-package jp.momonnga.skillbattle;
+package jp.momonnga.skillbattle.skill;
 
 import jp.momonnga.skillbattle.skill.Skill;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SkillManager {
@@ -34,6 +35,12 @@ public class SkillManager {
     public void unregisterSkill(Skill skill) {
         skillList.remove(skill);
         skill.getSkillProcessor().unregisterEvents();
+    }
+
+    @SuppressWarnings("rawtypes")
+    public void registerDefaultSkills() {
+        Class[] skills = new Class[]{WallKick.class, TestSkill.class};
+        Arrays.stream(skills).map(Skill::getInstance).forEach(this::registerSkill);
     }
 
 

@@ -2,6 +2,7 @@ package jp.momonnga.skillbattle;
 
 import jp.momonnga.skillbattle.event.SkillBattlePlayerCreateEvent;
 import jp.momonnga.skillbattle.skill.Skill;
+import jp.momonnga.skillbattle.skill.SkillManager;
 import jp.momonnga.skillbattle.skill.TestSkill;
 import jp.momonnga.skillbattle.skill.WallKick;
 import org.bukkit.Bukkit;
@@ -24,18 +25,12 @@ public final class SkillBattle extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        registerDefaultSkills();
+        getSkillManager().registerDefaultSkills();
     }
 
     @Override
     public void onDisable() {
 
-    }
-
-    @SuppressWarnings("rawtypes")
-    private void registerDefaultSkills() {
-        Class[] skills = new Class[]{WallKick.class, TestSkill.class};
-        Arrays.stream(skills).map(Skill::getInstance).forEach(getSkillManager()::registerSkill);
     }
 
     public SkillManager getSkillManager() {

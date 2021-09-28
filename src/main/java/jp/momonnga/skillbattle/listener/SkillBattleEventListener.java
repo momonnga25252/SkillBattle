@@ -1,6 +1,6 @@
 package jp.momonnga.skillbattle.listener;
 
-import jp.momonnga.skillbattle.SkillManager;
+import jp.momonnga.skillbattle.skill.SkillManager;
 import jp.momonnga.skillbattle.event.SkillBattlePlayerCreateEvent;
 import jp.momonnga.skillbattle.skill.WallKick;
 import org.bukkit.event.EventHandler;

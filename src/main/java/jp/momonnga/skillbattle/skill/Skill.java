@@ -23,7 +23,7 @@ public abstract class Skill {
         }
     }
 
-    public static Skill getInstance(Class<? extends Skill> clazz) {
+    static Skill getInstance(Class<? extends Skill> clazz) {
         synchronized (_lock) {
             String classname = clazz.getName();
             Skill obj = _classnameToInstance.get(classname);
