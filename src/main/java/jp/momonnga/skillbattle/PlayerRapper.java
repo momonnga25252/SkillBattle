@@ -1,7 +1,6 @@
 package jp.momonnga.skillbattle;
 
 import jp.momonnga.skillbattle.skill.Skill;
-import jp.momonnga.skillbattle.skill.WallKick;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 
@@ -11,15 +10,13 @@ import java.util.Set;
 
 public class PlayerRapper implements SkillBattlePlayer {
     private final Player self;
+    private final Set<Skill> skillSet = new HashSet<>();
     private int skillPoint;
     private int limitSkillPoint;
     private int regenerationSkillPoint;
-    private final Set<Skill> skillSet = new HashSet<>();
 
     public PlayerRapper(Player player) {
         this.self = player;
-        addSkill(WallKick.getInstance(WallKick.class));
-
     }
 
     @Override
@@ -49,7 +46,7 @@ public class PlayerRapper implements SkillBattlePlayer {
 
     @Override
     public void setLimitSkillPoint(int value) {
-        Validate.isTrue(value >= 0,"負の数は指定できません");
+        Validate.isTrue(value >= 0, "負の数は指定できません");
         limitSkillPoint = value;
     }
 
@@ -60,7 +57,7 @@ public class PlayerRapper implements SkillBattlePlayer {
 
     @Override
     public void setAutoRegenerationSkillPoint(int value) {
-        Validate.isTrue(value >= 0,"負の数は指定できません");
+        Validate.isTrue(value >= 0, "負の数は指定できません");
         regenerationSkillPoint = value;
     }
 
@@ -71,24 +68,24 @@ public class PlayerRapper implements SkillBattlePlayer {
 
     @Override
     public void setSkillPoint(int value) {
-        Validate.isTrue(value >= 0,"負の数は指定できません");
-        Validate.isTrue(value <= limitSkillPoint,"上限を超えて指定することはできません");
+        Validate.isTrue(value >= 0, "負の数は指定できません");
+        Validate.isTrue(value <= limitSkillPoint, "上限を超えて指定することはできません");
         skillPoint = value;
     }
 
     @Override
     public void addSkillPoint(int value) {
-        int expression = skillPoint+value;
-        Validate.isTrue(value >= 0,"負の数は指定できません removeメソッドを利用してください");
-        Validate.isTrue(expression <= limitSkillPoint,"上限を超えるような値を代入することはできません");
+        int expression = skillPoint + value;
+        Validate.isTrue(value >= 0, "負の数は指定できません removeメソッドを利用してください");
+        Validate.isTrue(expression <= limitSkillPoint, "上限を超えるような値を代入することはできません");
         setSkillPoint(expression);
     }
 
     @Override
     public void removeSkillPoint(int value) {
-        int expression = skillPoint-value;
-        Validate.isTrue(value >= 0,"負の数は指定できません removeメソッドを利用してください");
-        Validate.isTrue(expression <= limitSkillPoint,"上限を超えるような値を代入することはできません");
+        int expression = skillPoint - value;
+        Validate.isTrue(value >= 0, "負の数は指定できません removeメソッドを利用してください");
+        Validate.isTrue(expression <= limitSkillPoint, "上限を超えるような値を代入することはできません");
         setSkillPoint(expression);
     }
 

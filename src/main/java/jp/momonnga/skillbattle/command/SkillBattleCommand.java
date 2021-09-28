@@ -10,8 +10,8 @@ import java.util.List;
 public class SkillBattleCommand implements TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(sender instanceof Player) {
-            if(args[0].equalsIgnoreCase("menu")) {
+        if (sender instanceof Player) {
+            if (args[0].equalsIgnoreCase("menu")) {
 
             }
         } else {

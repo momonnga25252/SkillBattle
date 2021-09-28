@@ -1,33 +1,26 @@
-package jp.momonnga.skillbattle.skill.event;
+package jp.momonnga.skillbattle.event;
 
 import jp.momonnga.skillbattle.SkillBattlePlayer;
 import jp.momonnga.skillbattle.skill.Skill;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class SkillEvent extends Event implements Cancellable {
+public class SkillEvent extends SkillBattlePlayerEvent implements Cancellable {
     private static final HandlerList handlerList = new HandlerList();
-    private final SkillBattlePlayer player;
     private final Skill skill;
     private boolean cancelled = false;
 
-    public SkillEvent(SkillBattlePlayer who,Skill skill) {
-        this.player = who;
+    public SkillEvent(SkillBattlePlayer who, Skill skill) {
+        super(who);
         this.skill = skill;
-    }
-
-    public SkillBattlePlayer getSkillBattlePlayer() {
-        return player;
-    }
-
-    public Skill getSkill() {
-        return skill;
     }
 
     public static HandlerList getHandlerList() {
         return handlerList;
+    }
+
+    public Skill getSkill() {
+        return skill;
     }
 
     @Override

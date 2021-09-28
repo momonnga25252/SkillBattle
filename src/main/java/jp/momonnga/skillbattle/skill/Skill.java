@@ -1,24 +1,24 @@
 package jp.momonnga.skillbattle.skill;
 
-import jp.momonnga.skillbattle.SkillBattle;
-import org.bukkit.GameMode;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
+import jp.momonnga.skillbattle.skill.processor.SkillProcessor;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public abstract class Skill {
 
-    private static final Map<String,Skill> _classnameToInstance = new HashMap<>();
+    private static final Map<String, Skill> _classnameToInstance = new HashMap<>();
     private static final Object _lock = new Object();
+
+    private String displayName = getSkillName();
 
     protected Skill() {
         synchronized (_lock) {
             String classname = this.getClass().getName();
-            if (_classnameToInstance.get(classname) != null) throw new RuntimeException("Already created: " + classname);
+            if (_classnameToInstance.get(classname) != null)
+                throw new RuntimeException("Already created: " + classname);
             _classnameToInstance.put(classname, this);
         }
     }
@@ -42,10 +42,29 @@ public abstract class Skill {
         }
     }
 
-    public abstract Listener getSkillProcessor();
+    public abstract SkillProcessor getSkillProcessor();
 
-    public static boolean checkGameMode(Player player) {
-        return !Arrays.asList(GameMode.CREATIVE,GameMode.SPECTATOR)
-                .contains(player.getGameMode());
+    public final String getSkillName() {
+        return getClass().getSimpleName();
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Skill skill)) return false;
+        return Objects.equals(getDisplayName(), skill.getDisplayName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDisplayName());
     }
 }
