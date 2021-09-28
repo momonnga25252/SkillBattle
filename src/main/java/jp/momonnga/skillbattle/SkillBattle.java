@@ -32,9 +32,10 @@ public final class SkillBattle extends JavaPlugin {
 
     }
 
+    @SuppressWarnings("rawtypes")
     private void registerDefaultSkills() {
         Class[] skills = new Class[]{WallKick.class, TestSkill.class};
-        Arrays.stream(skills).map(Skill::getInstance).forEach(skillManager::registerSkill);
+        Arrays.stream(skills).map(Skill::getInstance).forEach(getSkillManager()::registerSkill);
     }
 
     public SkillManager getSkillManager() {
