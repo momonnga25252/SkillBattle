@@ -25,6 +25,8 @@ public class QuickTeleportProcessor extends SkillProcessor {
         if (!sp.hasSkill(getSkill())) return;
         if (checkGameMode(player)) return;
 
+
+
         //event.setCancelled(true);
     }
 }

@@ -1,16 +1,12 @@
 package jp.momonnga.skillbattle.skill;
 
-import jp.momonnga.skillbattle.SkillBattle;
 import jp.momonnga.skillbattle.skill.processor.QuickTeleportProcessor;
 import jp.momonnga.skillbattle.skill.processor.SkillProcessor;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 
-import java.util.Objects;
+import java.util.List;
 
 public class QuickTeleport extends ItemTriggerSkill {
 
@@ -18,6 +14,9 @@ public class QuickTeleport extends ItemTriggerSkill {
 
     private final SkillProcessor processor = new QuickTeleportProcessor(this);
 
+    public QuickTeleport() {
+        setDisplayName(ChatColor.RED +"クイックテレポート");
+    }
 
     @Override
     public SkillProcessor getSkillProcessor() {
@@ -26,11 +25,13 @@ public class QuickTeleport extends ItemTriggerSkill {
 
     @Override
     public Material getMaterial() {
-        return null;
+        return Material.GOLD_INGOT;
     }
 
     @Override
     public ItemMeta getItemMeta(ItemMeta meta) {
-        return null;
+        meta.setDisplayName(getDisplayName());
+        meta.setLore(List.of("スキル名: "+getDisplayName()+ChatColor.RESET,"使用方法: 壁や天井に向けて右クリック","説明: 壁や天井を通り抜けることができる。"));
+        return meta;
     }
 }

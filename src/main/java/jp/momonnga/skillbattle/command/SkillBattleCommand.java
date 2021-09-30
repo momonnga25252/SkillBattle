@@ -13,6 +13,8 @@ public class SkillBattleCommand implements TabExecutor {
         if (sender instanceof Player) {
             if (args[0].equalsIgnoreCase("menu")) {
 
+
+
             }
         } else {
             sender.sendMessage("プレイヤーのみ利用可能なコマンドです");

@@ -25,7 +25,7 @@ public final class SkillBattle extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getSkillManager().registerDefaultSkills();
+        skillManager.registerDefaultSkills();
     }
 
     @Override
