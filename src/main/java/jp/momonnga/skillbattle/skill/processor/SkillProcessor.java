@@ -21,7 +21,7 @@ public abstract class SkillProcessor implements Listener {
         this.skill = skill;
     }
 
-    protected boolean checkGameMode(Player player) {
+    protected boolean isAcceptedGameMode(Player player) {
         return !ignored.contains(player.getGameMode());
     }
 

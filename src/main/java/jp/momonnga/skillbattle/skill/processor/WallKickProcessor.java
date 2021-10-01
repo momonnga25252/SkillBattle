@@ -24,29 +24,6 @@ public class WallKickProcessor extends SkillProcessor {
         super(skill);
     }
 
-    private double calcWallDistance(World world, Location location, Vector direction) {
-        RayTraceResult result = world.rayTraceBlocks(location, direction, 1);
-        if (result == null) return -1;
-        return result.getHitPosition().distance(location.toVector());
-    }
-
-    private Vector calcJumpVelocity(Vector playerVector, BlockFace playerFace) {
-        Vector resultVector = playerVector.clone();
-        resultVector.multiply(WallKick.MULTIPLE_MOVEMENT);
-        resultVector.setY(WallKick.JUMP_VELOCITY);
-
-        Vector oppositeFaceVelocity = playerFace.getOppositeFace().getDirection();
-        if (playerVector.getX() != 0 || playerVector.getZ() != 0) return resultVector;
-
-        if (oppositeFaceVelocity.getX() == 0) resultVector.setZ(oppositeFaceVelocity.getZ() * WallKick.REFLECT_VALUE);
-        if (oppositeFaceVelocity.getZ() == 0) resultVector.setX(oppositeFaceVelocity.getX() * WallKick.REFLECT_VALUE);
-        return resultVector;
-    }
-
-    private boolean containsJudgeDistance(double wallDistance) {
-        return BooleanUtils.isFalse(wallDistance == -1 || wallDistance > WallKick.JUDGE_DISTANCE);
-    }
-
     @Override
     public void unregisterEvents() {
         PlayerMoveEvent.getHandlerList().unregister(this);
@@ -61,7 +38,7 @@ public class WallKickProcessor extends SkillProcessor {
         SkillBattlePlayer sp = SkillBattlePlayer.of(player);
 
         if (!sp.hasSkill(getSkill())) return;
-        if (!checkGameMode(player)) return;
+        if (!isAcceptedGameMode(player)) return;
 
         Location loc = player.getLocation();
         World world = player.getWorld();
@@ -70,13 +47,13 @@ public class WallKickProcessor extends SkillProcessor {
         Block faceBlock = playerLocBlock.getRelative(playerFace);
         Block upBlock = faceBlock.getRelative(BlockFace.UP);
 
-        double wallDistance = calcWallDistance(world, loc, playerFace.getDirection());
-        player.setAllowFlight(containsJudgeDistance(wallDistance) && !upBlock.isEmpty() && !faceBlock.isEmpty() && !player.isOnGround());
+        double wallDistance = calcWallDistance(world, loc, playerFace.getDirection(),WallKick.JUDGE_DISTANCE);
+        player.setAllowFlight(containsJudgeDistance(wallDistance,WallKick.JUDGE_DISTANCE) && !upBlock.isEmpty() && !faceBlock.isEmpty() && !player.isOnGround());
     }
 
     @EventHandler
     public void changeGameMode(PlayerGameModeChangeEvent event) {
-        event.getPlayer().setAllowFlight(checkGameMode(event.getPlayer()));
+        event.getPlayer().setAllowFlight(isAcceptedGameMode(event.getPlayer()));
     }
 
     @SuppressWarnings("deprecation")
@@ -86,7 +63,7 @@ public class WallKickProcessor extends SkillProcessor {
         SkillBattlePlayer sp = SkillBattlePlayer.of(player);
 
         if (!sp.hasSkill(getSkill())) return;
-        if (checkGameMode(player)) return;
+        if (!isAcceptedGameMode(player)) return;
 
         event.setCancelled(true);
 
@@ -97,9 +74,8 @@ public class WallKickProcessor extends SkillProcessor {
         Block playerFaceBlock1 = playerLocBlock.getRelative(playerFace);
         Block playerFaceBlock2 = playerFaceBlock1.getRelative(BlockFace.UP);
 
-        double wallDistance = calcWallDistance(world, playerLoc, playerFace.getDirection());
-        boolean wallJudge = wallDistance == -1 || wallDistance > WallKick.JUDGE_DISTANCE;
-        if (wallJudge || playerFaceBlock1.isEmpty() || playerFaceBlock2.isEmpty() || player.isOnGround()) return;
+        double wallDistance = calcWallDistance(world, playerLoc, playerFace.getDirection(),WallKick.JUDGE_DISTANCE);
+        if (!containsJudgeDistance(wallDistance,WallKick.JUDGE_DISTANCE) || playerFaceBlock1.isEmpty() || playerFaceBlock2.isEmpty() || player.isOnGround()) return;
 
         SkillEvent skillEvent = new SkillEvent(SkillBattlePlayer.of(player), getSkill());
         Bukkit.getServer().getPluginManager().callEvent(skillEvent);
@@ -107,6 +83,27 @@ public class WallKickProcessor extends SkillProcessor {
 
         Vector afterJumpVelocity = calcJumpVelocity(player.getVelocity(), playerFace);
         player.setVelocity(afterJumpVelocity);
+    }
 
+    public static double calcWallDistance(World world, Location location, Vector direction,double distance) {
+        RayTraceResult result = world.rayTraceBlocks(location, direction, distance);
+        if (result == null) return -1;
+        return result.getHitPosition().distance(location.toVector());
+    }
+
+    public static boolean containsJudgeDistance(double wallDistance,double judgeDistance) {
+        return BooleanUtils.isFalse(wallDistance == -1 || wallDistance > judgeDistance);
+    }
+
+    private Vector calcJumpVelocity(Vector playerVector, BlockFace playerFace) {
+        Vector resultVector = playerVector.clone();
+        resultVector.multiply(WallKick.MULTIPLE_MOVEMENT);
+        resultVector.setY(WallKick.JUMP_VELOCITY);
+        if (playerVector.getX() == 0 && playerVector.getZ() == 0) return resultVector;
+
+        Vector oppositeFaceVelocity = playerFace.getOppositeFace().getDirection();
+        if (oppositeFaceVelocity.getX() == 0) resultVector.setZ(oppositeFaceVelocity.getZ() * WallKick.REFLECT_VALUE);
+        if (oppositeFaceVelocity.getZ() == 0) resultVector.setX(oppositeFaceVelocity.getX() * WallKick.REFLECT_VALUE);
+        return resultVector;
     }
 }

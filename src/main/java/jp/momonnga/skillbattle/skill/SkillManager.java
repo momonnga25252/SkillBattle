@@ -39,7 +39,7 @@ public class SkillManager {
 
     @SuppressWarnings("rawtypes")
     public void registerDefaultSkills() {
-        Class[] skills = new Class[]{WallKick.class, TestSkill.class};
+        Class[] skills = new Class[]{WallKick.class, TestSkill.class,QuickTeleport.class};
         Arrays.stream(skills).map(Skill::getInstance).forEach(this::registerSkill);
     }
 

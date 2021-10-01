@@ -14,10 +14,12 @@ public abstract class ItemTriggerSkill extends Skill {
 
     public static final NamespacedKey SKILLS_KEY = new NamespacedKey(SkillBattle.getPlugin(),"skill_name");
 
+    private int coolTime = 0;
+
     public ItemStack createTriggerItem() {
         ItemStack trigger = new ItemStack(getMaterial());
         ItemMeta meta = getItemMeta(trigger.getItemMeta());
-        meta.getPersistentDataContainer().set(SKILLS_KEY, PersistentDataType.STRING,getSkillName());
+        meta.getPersistentDataContainer().set(SKILLS_KEY, PersistentDataType.STRING,getClass().getName());
         trigger.setItemMeta(meta);
         return trigger;
     }
@@ -37,8 +39,31 @@ public abstract class ItemTriggerSkill extends Skill {
         return meta.getPersistentDataContainer().has(SKILLS_KEY,PersistentDataType.STRING);
     }
 
+    public static ItemTriggerSkill getInstance(ItemStack trigger) {
+        Objects.requireNonNull(trigger);
+        Objects.requireNonNull(trigger.getItemMeta());
+        ItemTriggerSkill skill = null;
+        try {
+            Class clazz = Class.forName(trigger.getItemMeta().getPersistentDataContainer().get(SKILLS_KEY,PersistentDataType.STRING));
+
+            skill = (ItemTriggerSkill) getInstance(clazz.asSubclass(ItemTriggerSkill.class));
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return skill;
+    }
+
     public abstract Material getMaterial();
 
     public abstract ItemMeta getItemMeta(ItemMeta meta);
+
+    public int getCoolTime() {
+        return coolTime;
+    }
+
+    public void setCoolTime(int ticks) {
+        coolTime = ticks;
+    }
+
 
 }

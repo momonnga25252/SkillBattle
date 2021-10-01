@@ -50,7 +50,7 @@ public abstract class CustomGUI {
     }
 
     static CustomGUI getInstance(Inventory inventory) {
-        Validate.isTrue(isMenu(inventory),"メニューじゃないものを");
+        Validate.isTrue(isMenu(inventory),"メニューでないインベントリです");
         return _classnameToInstance.values().stream()
                 .filter(ins -> ins.hasMenu(inventory))
                 .findFirst()

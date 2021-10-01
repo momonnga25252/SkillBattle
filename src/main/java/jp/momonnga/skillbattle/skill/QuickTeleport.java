@@ -11,10 +11,12 @@ import java.util.List;
 public class QuickTeleport extends ItemTriggerSkill {
 
     public static final double TELEPORT_REACH = 6;
+    public static final double JUDGE_DISTANCE = 0.7;
 
     private final SkillProcessor processor = new QuickTeleportProcessor(this);
 
     public QuickTeleport() {
+        setCoolTime(100);
         setDisplayName(ChatColor.RED +"クイックテレポート");
     }
 

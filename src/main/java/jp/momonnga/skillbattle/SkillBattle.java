@@ -1,6 +1,8 @@
 package jp.momonnga.skillbattle;
 
+import jp.momonnga.skillbattle.command.SkillBattleCommand;
 import jp.momonnga.skillbattle.event.SkillBattlePlayerCreateEvent;
+import jp.momonnga.skillbattle.listener.SkillBattleEventListener;
 import jp.momonnga.skillbattle.skill.Skill;
 import jp.momonnga.skillbattle.skill.SkillManager;
 import jp.momonnga.skillbattle.skill.TestSkill;
@@ -26,6 +28,8 @@ public final class SkillBattle extends JavaPlugin {
     @Override
     public void onEnable() {
         skillManager.registerDefaultSkills();
+        getCommand(SkillBattleCommand.LABEL).setExecutor(new SkillBattleCommand());
+        getServer().getPluginManager().registerEvents(new SkillBattleEventListener(),this);
     }
 
     @Override
